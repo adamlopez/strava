@@ -14,10 +14,10 @@ class StravaService:
     token_file = "Resources/token.json"
     client_id = 37935
     client_secret = '8a3b7cf400e318744daab02ba3e545d66e92890d'
-    def token_saver(self, token):
-        """save the refresh token."""
-        with open(self.token_file, "w", encoding='utf-8') as token_file:
-            json.dump(token, token_file)
+
+    def __del__(self):
+        """Destructor."""
+        logger.info('Deleting instance of StravaService.')
 
     def __init__(self):
         refresh_payload = {'client_id': self.client_id, 'client_secret': self.client_secret}
@@ -27,8 +27,13 @@ class StravaService:
         except IOError:
             logger.error('failed to load authentication token from JSON file.')
             quit()
-        self.client = OAuth2Session(self.client_id, token=self.token, auto_refresh_url=Urls.token,
+        self.client = OAuth2Session(self.client_id, token=self.token, auto_refresh_url=Urls.token.value,
                                     auto_refresh_kwargs=refresh_payload, token_updater=self.token_saver)
+
+    def token_saver(self, token):
+        """save the token as a json string."""
+        with open(self.token_file, "w", encoding='utf-8') as token_file:
+            json.dump(token, token_file)
 
     def send_request(self, request_endpoint: Urls) -> Response:
         response = self.client.get(request_endpoint.value)
