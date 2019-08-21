@@ -1,7 +1,12 @@
+import os
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
+import Logger
+
+logger = Logger.get_logger(os.path.basename(__file__)[:-3])
 
 df = pd.read_csv(
     'https://gist.githubusercontent.com/chriddyp/'
@@ -37,7 +42,7 @@ class AthleteDashboard:
 
 
 class ActivityDashboard:
-    """Model of the dashboard for the authenticated usser's activities."""
+    """Model of the dashboard for the authenticated user's activities."""
 
 
 if __name__ == '__main__':

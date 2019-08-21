@@ -4,9 +4,10 @@ import json
 import os
 from requests import Response
 from Urls import Urls
-from Logger import Logger
+import Logger
 
-logger = logging.getLogger(os.path.abspath(__file__))
+logger = Logger.get_logger(os.path.basename(__file__)[:-3])
+
 
 class StravaService:
     """Used to interface with the Strava API."""
@@ -18,6 +19,8 @@ class StravaService:
     def __del__(self):
         """Destructor."""
         logger.info('Deleting instance of StravaService.')
+
+
 
     def __init__(self):
         refresh_payload = {'client_id': self.client_id, 'client_secret': self.client_secret}
@@ -32,10 +35,13 @@ class StravaService:
 
     def token_saver(self, token):
         """save the token as a json string."""
+        logger.info(f"Saving token to {self.token_file}.")
         with open(self.token_file, "w", encoding='utf-8') as token_file:
             json.dump(token, token_file)
+        logger.info('token saved successfully.')
 
-    def send_request(self, request_endpoint: Urls) -> Response:
+    def send_request(self, request_endpoint: Urls, **kwargs) -> Response:
+        base_url = request_endpoint.value
         response = self.client.get(request_endpoint.value)
         logger.info(response)
         logger.info(response.text)
