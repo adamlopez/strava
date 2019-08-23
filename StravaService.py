@@ -20,8 +20,6 @@ class StravaService:
         """Destructor."""
         logger.info('Deleting instance of StravaService.')
 
-
-
     def __init__(self):
         refresh_payload = {'client_id': self.client_id, 'client_secret': self.client_secret}
         try:
@@ -41,8 +39,17 @@ class StravaService:
         logger.info('token saved successfully.')
 
     def send_request(self, request_endpoint: Urls, **kwargs) -> Response:
-        base_url = request_endpoint.value
-        response = self.client.get(request_endpoint.value)
+        print(type(kwargs))
+        url = request_endpoint.value
+        # args = tuple([v for v in kwargs.values()])
+        # if len(args) == 1:
+        #     args = args[0]
+        # url = url.format(args)
+        logger.info(f"raw url")
+        logger.debug(f"arguments passed to request: {kwargs}")
+        url = url.format(kwargs)
+        logger.info(f"formatted url: {url}")
+        response = self.client.get(url)
         logger.info(response)
         logger.info(response.text)
         print(response.text)

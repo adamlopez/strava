@@ -8,6 +8,16 @@ import Logger
 
 logger = Logger.get_logger(os.path.basename(__file__)[:-3])
 
+
+class AthleteDashboard:
+    """Model of the dashboard for athlete information."""
+
+
+class ActivityDashboard:
+    """Model of the dashboard for the authenticated user's activities."""
+
+
+
 df = pd.read_csv(
     'https://gist.githubusercontent.com/chriddyp/'
     'c78bf172206ce24f77d6363a2d754b59/raw/'
@@ -27,23 +37,13 @@ def generate_table(dataframe, max_rows=10):
     )
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-app.layout = html.Div(children=[
-    html.H4(children='US Agriculture Exports (2011)'),
-    generate_table(df)
-])
-
-
-class AthleteDashboard:
-    """Model of the dashboard for athlete information."""
-
-
-class ActivityDashboard:
-    """Model of the dashboard for the authenticated user's activities."""
-
-
 if __name__ == '__main__':
+    external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+    app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+    app.layout = html.Div(children=[
+        html.H4(children='US Agriculture Exports (2011)'),
+        generate_table(df)
+    ])
     app.run_server(debug=True)
