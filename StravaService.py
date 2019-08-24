@@ -4,9 +4,10 @@ import json
 import os
 from requests import Response
 from Urls import Urls
-from Logger import Logger
+import Logger
 
-logger = logging.getLogger(os.path.abspath(__file__))
+logger = Logger.get_logger(os.path.basename(__file__)[:-3])
+
 
 class StravaService:
     """Used to interface with the Strava API."""
@@ -32,11 +33,23 @@ class StravaService:
 
     def token_saver(self, token):
         """save the token as a json string."""
+        logger.info(f"Saving token to {self.token_file}.")
         with open(self.token_file, "w", encoding='utf-8') as token_file:
             json.dump(token, token_file)
+        logger.info('token saved successfully.')
 
-    def send_request(self, request_endpoint: Urls) -> Response:
-        response = self.client.get(request_endpoint.value)
+    def send_request(self, request_endpoint: Urls, **kwargs) -> Response:
+        print(type(kwargs))
+        url = request_endpoint.value
+        # args = tuple([v for v in kwargs.values()])
+        # if len(args) == 1:
+        #     args = args[0]
+        # url = url.format(args)
+        logger.info(f"raw url")
+        logger.debug(f"arguments passed to request: {kwargs}")
+        url = url.format(kwargs)
+        logger.info(f"formatted url: {url}")
+        response = self.client.get(url)
         logger.info(response)
         logger.info(response.text)
         print(response.text)
